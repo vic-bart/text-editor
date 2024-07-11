@@ -1,3 +1,5 @@
+/*** INCLUDES ***/
+
 // Tutorial (https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html)
 #include <stdio.h>
 // Tutorial recommends the unistd library, but that only works on Linux OSs; since I'm running this on a Windows OS, I'm going to use the stdio library instead (the alternatives seem convoluted, or require a virtual Linux environment, which is not what I want; I want this to run on Windows).
@@ -6,6 +8,8 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <errno.h>
+
+/*** TERMINAL ***/
 
 void die(const char *error) {
   perror(error);
@@ -21,6 +25,8 @@ void enableRawMode(HANDLE console, DWORD mode) {
   // turning off canonical mode (https://gist.github.com/cloudwu/96ec4d6636d65b7974b633e01d97a1f9)
   if (SetConsoleMode(console, mode & ~ENABLE_ECHO_INPUT & ~ENABLE_LINE_INPUT & ~ENABLE_PROCESSED_INPUT) == 0) die("enable raw mode error");
 }
+
+/*** INIT ***/
 
 int main() {
   // Defining variables for enable/disableRawMode
