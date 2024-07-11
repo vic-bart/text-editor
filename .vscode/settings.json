@@ -3,6 +3,7 @@
     "xiosbase": "c",
     "xlocale": "c",
     "xutility": "c",
-    "windows.h": "c"
+    "windows.h": "c",
+    "stdio.h": "c"
   }
 }
