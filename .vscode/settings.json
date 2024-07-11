@@ -5,5 +5,8 @@
     "xutility": "c",
     "windows.h": "c",
     "stdio.h": "c"
-  }
+  },
+  "terminal.integrated.commandsToSkipShell": [
+  "-workbench.action.quickOpenView"
+]
 }

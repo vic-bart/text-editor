@@ -9,6 +9,11 @@
 #include <stdlib.h>
 #include <errno.h>
 
+
+/*** DEFINES ***/
+
+#define CTRL_KEY(k) ((k) & 0x1f)
+
 /*** TERMINAL ***/
 
 void die(const char *error) {
@@ -41,7 +46,7 @@ int main() {
   while (1) {
     fread(&c, 1, 1, stdin);
     if (ferror(stdin) != 0) die("read error");
-    if (c == 'q') break;
+    if (c == CTRL_KEY('q')) break;
     if (iscntrl(c)) printf("%d\n", c);
     else printf("%d ('%c')\n", c, c);
   };
