@@ -5,20 +5,30 @@
 
 #include <windows.h>
 
-void enableRawMode() {
+void enableRawMode(HANDLE console, DWORD mode) {
   // windows.h (https://stackoverflow.com/questions/9217908/how-to-disable-echo-in-windows-console)
-  HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
-  DWORD mode = 0;
-  GetConsoleMode(hStdin, &mode);
-  SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
+  // turning off canonical mode (https://gist.github.com/cloudwu/96ec4d6636d65b7974b633e01d97a1f9)
+  SetConsoleMode(console, mode & ~ENABLE_ECHO_INPUT & ~ENABLE_LINE_INPUT);
+}
+
+void disableRawMode(HANDLE console, DWORD mode) {
+  SetConsoleMode(console, mode);
 }
 
 int main() {
-  enableRawMode();
+  // Defining variables for enable/disableRawMode
+  // Occurs here so the initial mode of the console can be passed to disableRawMode
+  HANDLE console = GetStdHandle(STD_INPUT_HANDLE); 
+  DWORD mode;
+  GetConsoleMode(console, &mode);
+
+  enableRawMode(console, mode);
 
   char c;
   while (fread(&c, 1, 1, stdin) == 1 && c != 'q'){
     fwrite(&c, 1, sizeof(c), stdout);
   };
+
+  disableRawMode(console, mode);
   return 0;
 }
