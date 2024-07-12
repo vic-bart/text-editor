@@ -17,6 +17,7 @@
 /*** TERMINAL ***/
 
 void die(const char *error) {
+  fwrite(&"\x1b[2J", 4, 1, stdout);
   perror(error);
   exit(1);
 }
@@ -42,8 +43,15 @@ char editorReadKey() {
 
 /*** OUTPUT ***/
 
+void editorDrawRows() {
+  int y;
+  for (y = 0; y < 24; y++) fwrite("~\r\n", 3, 1, stdout);
+}
+
 void editorRefreshScreen() {
   fwrite(&"\x1b[2J", 4, 1, stdout);
+  editorDrawRows();
+  fwrite(&"\x1b[H", 3, 1, stdout);
 }
 
 /*** INPUT ***/
@@ -53,6 +61,7 @@ void editorProcessKey() {
 
   switch (c) {
     case CTRL_KEY('q'):
+    fwrite(&"\x1b[2J", 4, 1, stdout);
     exit(0);
     break;
   }
