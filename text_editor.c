@@ -31,6 +31,33 @@ void enableRawMode(HANDLE console, DWORD mode) {
   if (SetConsoleMode(console, mode & ~ENABLE_ECHO_INPUT & ~ENABLE_LINE_INPUT & ~ENABLE_PROCESSED_INPUT) == 0) die("enable raw mode error");
 }
 
+char editorReadKey() {
+  int bytesRead;
+  char c;
+  while ((bytesRead = fread(&c, 1, 1, stdin)) != 1) {
+    if (ferror(stdin) != 0) die("read error"); 
+  }
+  return c;
+}
+
+/*** OUTPUT ***/
+
+void editorRefreshScreen() {
+  fwrite(&"\x1b[2J", 4, 1, stdout);
+}
+
+/*** INPUT ***/
+
+void editorProcessKey() {
+  char c = editorReadKey();
+
+  switch (c) {
+    case CTRL_KEY('q'):
+    exit(0);
+    break;
+  }
+}
+
 /*** INIT ***/
 
 int main() {
@@ -42,13 +69,9 @@ int main() {
 
   enableRawMode(console, mode);
 
-  char c;
   while (1) {
-    fread(&c, 1, 1, stdin);
-    if (ferror(stdin) != 0) die("read error");
-    if (c == CTRL_KEY('q')) break;
-    if (iscntrl(c)) printf("%d\n", c);
-    else printf("%d ('%c')\n", c, c);
+    editorRefreshScreen();
+    editorProcessKey();
   };
 
   disableRawMode(console, mode);
